@@ -8,28 +8,44 @@ output:
 
 ## Loading and preprocessing the data
 
-First, we read in the unzipped .csv file stored in our working directory.
+First, we download and unzip the data file from 
 ```{r}
-activity <- read.csv("./activity.csv", header=TRUE, sep=)
+# link <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+# download.file(url = link, destfile='./activity.zip',method = destfile)
+# dataFile <- read.csv(unz("./activity.zip", "./activity."))
+
+unzip("./activity.zip")
+activity <- read.csv("./activity.csv")
+head(activity)
 ```
+
+
+```{r, include=FALSE, cache=FALSE}
+library(lubridate)
+activity$date <- ymd(activity$date)
+```
+
+```{r}
+library(plyr)
+library(ggplot2)
+library(scales)
+#Summarize measurements grouped by date
+matrix <- ddply(activity, c("date"), summarise, total_steps = sum(steps))
+matrix$date <- as.Date(matrix$date)
+
+ggplot(data = matrix, aes(x = date, y = total_steps)) +
+      geom_histogram(stat = "identity") +
+      ggtitle("Total number of steps grouped by day") +
+      scale_y_continuous("Total number of steps") +
+      scale_x_date("Day", labels=date_format("%b %d, %Y"), breaks = date_breaks("2 day")) +
+      theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5), 
+            text = element_text(size=10))
+```
+We convert date varaible using
 
 Now convert object from data frame to data table
-```{r}
-library(data.table)
-activity <- data.table(activity)
-```
 
 ## What is mean total number of steps taken per day?
-
-1. First we plot a histogram of total steps for each day.
-```{r}
-sumSteps <- activity[, sum(steps, na.rm=T), by=date]
-library(ggplot2)
-plot1 <- ggplot(sumSteps, aes(date, V1)) + geom_histogram(stat='identity') + 
-    ylab("Total steps taken each day")
-print(plot1)
-head(sumSteps)
-```
 
 
 ## What is the average daily activity pattern?

@@ -1,0 +1,19 @@
+---
+title: "PA1"
+author: "Lamran Haroon"
+date: "July 16, 2015"
+output: html_document
+---
+```{r}
+unzip("./activity.zip")
+activity <- read.csv("./activity.csv")
+head(activity)
+```
+
+```{r}
+
+```
+
+You can also embed plots, for example:
+
+

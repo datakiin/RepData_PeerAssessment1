@@ -3,46 +3,71 @@
 
 ## Loading and preprocessing the data
 
-First, we read in the unzipped .csv file stored in our working directory.
+First, we download and unzip the data file from 
 
 ```r
-activity <- read.csv("./activity.csv", header=TRUE, sep=)
+# link <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+# download.file(url = link, destfile='./activity.zip',method = destfile)
+# dataFile <- read.csv(unz("./activity.zip", "./activity."))
+
+unzip("./activity.zip")
+activity <- read.csv("./activity.csv")
+head(activity)
 ```
 
-Now convert object from data frame to data table
-
-```r
-library(data.table)
-activity <- data.table(activity)
+```
+##   steps       date interval
+## 1    NA 2012-10-01        0
+## 2    NA 2012-10-01        5
+## 3    NA 2012-10-01       10
+## 4    NA 2012-10-01       15
+## 5    NA 2012-10-01       20
+## 6    NA 2012-10-01       25
 ```
 
-## What is mean total number of steps taken per day?
 
-1. First we plot a histogram of total steps for each day.
+
+
 
 ```r
-sumSteps <- activity[, sum(steps, na.rm=T), by=date]
+library(plyr)
+```
+
+```
+## 
+## Attaching package: 'plyr'
+## 
+## The following object is masked from 'package:lubridate':
+## 
+##     here
+```
+
+```r
 library(ggplot2)
-plot1 <- ggplot(sumSteps, aes(date, V1)) + geom_histogram(stat='identity') + 
-    ylab("Total steps taken each day")
-print(plot1)
+library(scales)
+#Summarize measurements grouped by date
+matrix <- ddply(activity, c("date"), summarise, total_steps = sum(steps))
+matrix$date <- as.Date(matrix$date)
+
+ggplot(data = matrix, aes(x = date, y = total_steps)) +
+      geom_histogram(stat = "identity") +
+      ggtitle("Total number of steps grouped by day") +
+      scale_y_continuous("Total number of steps") +
+      scale_x_date("Day", labels=date_format("%b %d, %Y"), breaks = date_breaks("2 day")) +
+      theme(axis.text.x=element_text(angle=90,hjust=1,vjust=0.5), 
+            text = element_text(size=10))
+```
+
+```
+## Warning: Removed 8 rows containing missing values (position_stack).
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+We convert date varaible using
 
-```r
-head(sumSteps)
-```
+Now convert object from data frame to data table
 
-```
-##          date    V1
-## 1: 2012-10-01     0
-## 2: 2012-10-02   126
-## 3: 2012-10-03 11352
-## 4: 2012-10-04 12116
-## 5: 2012-10-05 13294
-## 6: 2012-10-06 15420
-```
+## What is mean total number of steps taken per day?
 
 
 ## What is the average daily activity pattern?
