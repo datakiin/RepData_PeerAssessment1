@@ -6,7 +6,7 @@
 1.Read in the unzipped .csv data file
 
 ```r
-activity <- read.csv('activity.csv', header=T, sep=',')
+activity <- read.csv('./activity.csv')
 ```
 
 2.Convert object from data frame to data table
@@ -37,6 +37,11 @@ setnames(meanSteps, old =c('date', 'V1'), new = c('date', 'mean'))
 medianSteps <- activity[, median(as.double(steps, na.rm=T)), by=date]
 setnames(medianSteps, old =c('date', 'V1'), new = c('date', 'median'))
 meanMedianSteps <- merge(meanSteps, medianSteps, by='date')
+```
+
+
+```r
+# mean(matrix$total_steps, na.rm = TRUE)
 ```
 
 The mean of the total number of steps per day is shown in the following table:

@@ -67,7 +67,7 @@ img {
 <div id="loading-and-preprocessing-the-data" class="section level2">
 <h2>Loading and preprocessing the data</h2>
 <p>1.Read in the unzipped .csv data file</p>
-<pre class="r"><code>activity &lt;- read.csv('activity.csv', header=T, sep=',')</code></pre>
+<pre class="r"><code>activity &lt;- read.csv('./activity.csv')</code></pre>
 <p>2.Convert object from data frame to data table</p>
 <pre class="r"><code>library(data.table)
 activity &lt;- data.table(activity)</code></pre>
@@ -86,6 +86,7 @@ setnames(meanSteps, old =c('date', 'V1'), new = c('date', 'mean'))
 medianSteps &lt;- activity[, median(as.double(steps, na.rm=T)), by=date]
 setnames(medianSteps, old =c('date', 'V1'), new = c('date', 'median'))
 meanMedianSteps &lt;- merge(meanSteps, medianSteps, by='date')</code></pre>
+<pre class="r"><code># mean(matrix$total_steps, na.rm = TRUE)</code></pre>
 <p>The mean of the total number of steps per day is shown in the following table:</p>
 <pre class="r"><code>head(meanMedianSteps)</code></pre>
 <pre><code>##          date     mean median
